@@ -263,13 +263,11 @@
       0))
   (def in-len (length input))
   (while (< in-idx in-len)
-    (def old-i i)
     (var delta 0)
     (var weight 1)
     (var digit-idx-j 0)
     (while true
       #(printf "<<top of while>>")
-      #(printf "old-i: %n" old-i)
       #(printf "digit-idx-j: %n" digit-idx-j)
       #(printf "in-idx: %n" in-idx)
       #(printf "weight: %n" weight)
@@ -296,11 +294,11 @@
     #(printf "n-pot-insrts: %n" n-pot-insrts)
     #(printf "bias before: %n" bias)
     (set bias
-         (adapt delta n-pot-insrts (zero? old-i)))
+         (adapt delta n-pot-insrts (zero? i)))
     #(printf "bias after: %n" bias)
     # XXX: no overflow check
-    (+= curr-cp (div (+ delta old-i) n-pot-insrts))
-    (set i (mod (+ delta old-i) n-pot-insrts))
+    (+= curr-cp (div (+ delta i) n-pot-insrts))
+    (set i (mod (+ delta i) n-pot-insrts))
     # XXX: is initial-n appropriate?  should this be hard-wired to 0x80?
     (assert (>= curr-cp initial-n)
             (string/format "unexpected basic code point: %n" curr-cp))
