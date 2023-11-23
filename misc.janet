@@ -380,6 +380,125 @@
 
   )
 
+# Decoding trace of example B from section 7.1:
+#
+# n is 128, i is 0, bias is 72
+# input is "ihqwcrb4cv8a8dqg056pqjye"
+# there is no delimiter, so extended string starts empty
+# delta "ihq" decodes to 19853
+# bias becomes 21
+# 4E0D *
+# delta "wc" decodes to 64
+# bias becomes 20
+# 4E0D 4E2D *
+# delta "rb" decodes to 37
+# bias becomes 13
+# 4E3A * 4E0D 4E2D
+# delta "4c" decodes to 56
+# bias becomes 17
+# 4E3A 4E48 * 4E0D 4E2D
+# delta "v8a" decodes to 599
+# bias becomes 32
+# 4E3A 4EC0 * 4E48 4E0D 4E2D
+# delta "8d" decodes to 130
+# bias becomes 23
+# 4ED6 * 4E3A 4EC0 4E48 4E0D 4E2D
+# delta "qg" decodes to 154
+# bias becomes 25
+# 4ED6 4EEC * 4E3A 4EC0 4E48 4E0D 4E2D
+# delta "056p" decodes to 46301
+# bias becomes 84
+# 4ED6 4EEC 4E3A 4EC0 4E48 4E0D 4E2D 6587 *
+# delta "qjye" decodes to 88531
+# bias becomes 90
+# 4ED6 4EEC 4E3A 4EC0 4E48 4E0D 8BF4 * 4E2D 6587
+
+# Decoding trace of example L from section 7.1:
+#
+# n is 128, i is 0, bias is 72
+# input is "3B-ww4c5e180e575a65lsy2b"
+# literal portion is "3B-", so extended string starts as:
+# 0033 0042
+# delta "ww4c" decodes to 62042
+# bias becomes 27
+# 0033 0042 5148 *
+# delta "5e" decodes to 139
+# bias becomes 24
+# 0033 0042 516B * 5148
+# delta "180e" decodes to 16683
+# bias becomes 67
+# 0033 5E74 * 0042 516B 5148
+# delta "575a" decodes to 34821
+# bias becomes 82
+# 0033 5E74 0042 516B 5148 751F *
+# delta "65l" decodes to 14592
+# bias becomes 67
+# 0033 5E74 0042 7D44 * 516B 5148 751F
+# delta "sy2b" decodes to 42088
+# bias becomes 84
+# 0033 5E74 0042 7D44 91D1 * 516B 5148 751F
+
+# Encoding trace of example B from section 7.1:
+#
+# bias is 72
+# input is:
+# 4ED6 4EEC 4E3A 4EC0 4E48 4E0D 8BF4 4E2D 6587
+# there are no basic code points, so no literal portion
+# next code point to insert is 4E0D
+# needed delta is 19853, encodes as "ihq"
+# bias becomes 21
+# next code point to insert is 4E2D
+# needed delta is 64, encodes as "wc"
+# bias becomes 20
+# next code point to insert is 4E3A
+# needed delta is 37, encodes as "rb"
+# bias becomes 13
+# next code point to insert is 4E48
+# needed delta is 56, encodes as "4c"
+# bias becomes 17
+# next code point to insert is 4EC0
+# needed delta is 599, encodes as "v8a"
+# bias becomes 32
+# next code point to insert is 4ED6
+# needed delta is 130, encodes as "8d"
+# bias becomes 23
+# next code point to insert is 4EEC
+# needed delta is 154, encodes as "qg"
+# bias becomes 25
+# next code point to insert is 6587
+# needed delta is 46301, encodes as "056p"
+# bias becomes 84
+# next code point to insert is 8BF4
+# needed delta is 88531, encodes as "qjye"
+# bias becomes 90
+# output is "ihqwcrb4cv8a8dqg056pqjye"
+
+# Encoding trace of example L from section 7.1:
+#
+# bias is 72
+# input is:
+# 0033 5E74 0042 7D44 91D1 516B 5148 751F
+# basic code points (0033, 0042) are copied to literal portion: "3B-"
+# next code point to insert is 5148
+# needed delta is 62042, encodes as "ww4c"
+# bias becomes 27
+# next code point to insert is 516B
+# needed delta is 139, encodes as "5e"
+# bias becomes 24
+# next code point to insert is 5E74
+# needed delta is 16683, encodes as "180e"
+# bias becomes 67
+# next code point to insert is 751F
+# needed delta is 34821, encodes as "575a"
+# bias becomes 82
+# next code point to insert is 7D44
+# needed delta is 14592, encodes as "65l"
+# bias becomes 67
+# next code point to insert is 91D1
+# needed delta is 42088, encodes as "sy2b"
+# bias becomes 84
+# output is "3B-ww4c5e180e575a65lsy2b"
+
 # scratch work for seeing what would happen to 0xd800 - 0xdfff
 # (stuff that utf-8 should not be using)
 (comment
