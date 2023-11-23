@@ -219,6 +219,18 @@
 #      increment i
 #    end
 
+(defn calc-threshold
+  [bias j]
+  (let [k (* base (inc j))]
+    (cond
+      (<= k (+ bias tmin))
+      tmin
+      #
+      (>= k (+ bias tmax))
+      tmax
+      #
+      (- k bias))))
+
 (defn decode*
   [input]
   (var i 0)
@@ -263,23 +275,13 @@
       # XXX: no overflow check
       (+= tot-i (* weight digit))
       #(printf "i: %n" i)
-      (def thresh
-        (let [k (* base (inc digit-idx-j))]
-          (cond
-            (<= k (+ bias tmin))
-            tmin
-            #
-            (>= k (+ bias tmax))
-            tmax
-            #
-            (- k bias))))
-      #(printf "thresh: %n" thresh)
-      (when (< digit thresh)
+      (def thr (calc-threshold bias digit-idx-j))
+      #(printf "thr: %n" thr)
+      (when (< digit thr)
         (break))
       # XXX: no overflow check
-      (*= weight (- base thresh))
+      (*= weight (- base thr))
       (++ digit-idx-j))
-    #
     (def delta (- tot-i old-i))
     #(printf "delta: %n" delta)
     # number of potential character inserts for output
@@ -558,26 +560,17 @@
         (++ delta))
       (when (= cp n)
         (var q delta)
-        (var j 1)
+        (var digit-idx-j 0)
         (while true
-          (def t
-            (let [k (* base j)]
-              (cond
-                (<= k (+ bias tmin))
-                tmin
-                #
-                (>= k (+ bias tmax))
-                tmax
-                #
-                (- k bias))))
-          (when (< q t)
+          (def thr (calc-threshold bias digit-idx-j))
+          (when (< q thr)
             (break))
           (array/push output
-                      (digit-to-cp (+ t
-                                      (mod (- q t) (- base t)))))
-          (set q (div (- q t)
-                      (- base t)))
-          (++ j))
+                      (digit-to-cp (+ thr
+                                      (mod (- q thr) (- base thr)))))
+          (set q (div (- q thr)
+                      (- base thr)))
+          (++ digit-idx-j))
         (array/push output (digit-to-cp q))
         #(printf "bias before: %n" bias)
         (set bias
