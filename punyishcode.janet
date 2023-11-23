@@ -221,16 +221,6 @@
 
 (defn decode*
   [input]
-  # XXX: `i` is a confusing entity -- at an appropriate point it
-  #      represents an insertion index, but elsewhere it appears
-  #      to represent the decoded code number of a substring
-  #      of the input, e.g.:
-  #
-  #        kva ->
-  #
-  #          (k (= 10) * 1) + (v (= 21) * 35) + (a (= 0) * ...) =
-  #
-  #          745
   (var i 0)
   (var curr-cp initial-n)
   (var bias initial-bias)
@@ -254,6 +244,7 @@
   (def in-len (length input))
   (while (< in-idx in-len)
     (def old-i i)
+    (var tot-i i)
     (var weight 1)
     (var digit-idx-j 0)
     (while true
@@ -270,7 +261,7 @@
       (++ in-idx)
       #(printf "digit: %n" digit)
       # XXX: no overflow check
-      (+= i (* weight digit))
+      (+= tot-i (* weight digit))
       #(printf "i: %n" i)
       (def thresh
         (let [k (* base (inc digit-idx-j))]
@@ -288,7 +279,8 @@
       # XXX: no overflow check
       (*= weight (- base thresh))
       (++ digit-idx-j))
-    (def delta (- i old-i))
+    #
+    (def delta (- tot-i old-i))
     #(printf "delta: %n" delta)
     # number of potential character inserts for output
     (def n-pot-insrts (inc (length output)))
@@ -298,8 +290,8 @@
          (adapt delta n-pot-insrts (zero? old-i)))
     #(printf "bias after: %n" bias)
     # XXX: no overflow check
-    (+= curr-cp (div i n-pot-insrts))
-    (set i (mod i n-pot-insrts))
+    (+= curr-cp (div tot-i n-pot-insrts))
+    (set i (mod tot-i n-pot-insrts))
     # XXX: is initial-n appropriate?  should this be hard-wired to 0x80?
     (assert (>= curr-cp initial-n)
             (string/format "unexpected basic code point: %n" curr-cp))
