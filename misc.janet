@@ -254,6 +254,132 @@
   "-> $1.00 <-"
 
   )
+
+(defn round-trip
+  [input]
+  (p/encode (p/decode input)))
+
+# from the rfc
+(comment
+
+  (let [in @"egbpdaj6bu4bxfgehfvwxn"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"ihqwcrb4cv8a8dqg056pqjye"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"ihqwctvzc91f659drss3x8bo0yb"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"Proprostnemluvesky-uyb24dma41a"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  # XXX: have fun navigating the result in your editor...
+  (let [in @"4dbcagdahymbxekheh6e0a7fei0b"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"i1baa7eci9glrd9b2ae1bj0hfcgg6iyaf8o0a1dig0cd"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"n8jok5ay5dzabd5bym9f0cm5685rrjetr6pdxa"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in (buffer "989aomsvi5e83db1d2a355cv1e0vak1dwrv93d5"
+                   "xbh15a0dt30a5jpsd879ccm6fea98c")]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"b1abfaaepdrnnbgefbaDotcwatmq2g4l"]
+    (deep= (buffer (string/ascii-lower in))
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"PorqunopuedensimplementehablarenEspaol-fmd56a"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"TisaohkhngthchnitingVit-kjcr8268qyxafd2f1b9g"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"3B-ww4c5e180e575a65lsy2b"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"-with-SUPER-MONKEYS-pc58ag80a8qai00g7n9n"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"Hello-Another-Way--fc4qua05auwb3674vfr0b"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"2-u9tlzr9756bt3uc0v"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"MajiKoi5-783gue6qz075azm5e"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"de-jg4avhby1noc0d"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"d9juau41awczczp"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  (let [in @"-> $1.00 <--"]
+    (deep= in
+           (round-trip in)))
+  # =>
+  true
+
+  )
+
 # scratch work for seeing what would happen to 0xd800 - 0xdfff
 # (stuff that utf-8 should not be using)
 (comment
