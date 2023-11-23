@@ -254,3 +254,58 @@
   "-> $1.00 <-"
 
   )
+# scratch work for seeing what would happen to 0xd800 - 0xdfff
+# (stuff that utf-8 should not be using)
+(comment
+
+  (def buf @"")
+
+  (def cp 0xd800)
+
+  (buffer/push buf
+               (bor 2r1110_0000
+                    (band 2r1111 (brshift cp 12)))
+               (bor 2r1000_0000
+                    (band 2r11_1111 (brshift cp 6)))
+               (bor 2r1000_0000
+                    (band 2r11_1111 cp)))
+  # =>
+  @"\xED\xA0\x80"
+
+  2r1110_1101 2r1010_0000 2r1000_0000
+
+  0xed 0xa0 0x80
+
+  (def buf @"")
+
+  (def cp 0xdbff)
+
+  (buffer/push buf
+               (bor 2r1110_0000
+                    (band 2r1111 (brshift cp 12)))
+               (bor 2r1000_0000
+                    (band 2r11_1111 (brshift cp 6)))
+               (bor 2r1000_0000
+                    (band 2r11_1111 cp)))
+  # =>
+  @"\xED\xAF\xBF"
+
+  (def buf @"")
+
+  (def cp 0xdfff)
+
+  (buffer/push buf
+               (bor 2r1110_0000
+                    (band 2r1111 (brshift cp 12)))
+               (bor 2r1000_0000
+                    (band 2r11_1111 (brshift cp 6)))
+               (bor 2r1000_0000
+                    (band 2r11_1111 cp)))
+  # =>
+  @"\xED\xBF\xBF"
+
+  2r1110_1101 2r1011_1111 2r1011_1111
+
+  0xed 0xbf 0xbf
+
+  )
