@@ -219,6 +219,14 @@
 #      increment i
 #    end
 
+# 3.2 Insertion unsort coding
+#
+# ...
+#
+# The deltas are a run-length encoding of this sequence of events:
+# they are the lengths of the runs of non-insertion states preceeding
+# the insertion states.
+
 (defn calc-threshold
   [bias j]
   (let [k (* base (inc j))]
@@ -256,7 +264,7 @@
   (def in-len (length input))
   (while (< in-idx in-len)
     (def old-i i)
-    (var tot-i i)
+    (var delta 0)
     (var weight 1)
     (var digit-idx-j 0)
     (while true
@@ -273,7 +281,7 @@
       (++ in-idx)
       #(printf "digit: %n" digit)
       # XXX: no overflow check
-      (+= tot-i (* weight digit))
+      (+= delta (* weight digit))
       #(printf "i: %n" i)
       (def thr (calc-threshold bias digit-idx-j))
       #(printf "thr: %n" thr)
@@ -282,7 +290,6 @@
       # XXX: no overflow check
       (*= weight (- base thr))
       (++ digit-idx-j))
-    (def delta (- tot-i old-i))
     #(printf "delta: %n" delta)
     # number of potential character inserts for output
     (def n-pot-insrts (inc (length output)))
@@ -292,8 +299,8 @@
          (adapt delta n-pot-insrts (zero? old-i)))
     #(printf "bias after: %n" bias)
     # XXX: no overflow check
-    (+= curr-cp (div tot-i n-pot-insrts))
-    (set i (mod tot-i n-pot-insrts))
+    (+= curr-cp (div (+ delta old-i) n-pot-insrts))
+    (set i (mod (+ delta old-i) n-pot-insrts))
     # XXX: is initial-n appropriate?  should this be hard-wired to 0x80?
     (assert (>= curr-cp initial-n)
             (string/format "unexpected basic code point: %n" curr-cp))
