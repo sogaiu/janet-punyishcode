@@ -19,6 +19,8 @@
 # first code point beyond ASCII
 (def initial-n 0x80)
 
+(def delimiter "-")
+
 # 3.4 Bias adaptation
 #
 # ...
@@ -235,7 +237,7 @@
   #
   (def output @[])
   #
-  (def last-delim-idx (last (string/find-all "-" input)))
+  (def last-delim-idx (last (string/find-all delimiter input)))
   # copy all basic code points that appear before the last delimiter
   (when last-delim-idx
     (for idx 0 last-delim-idx
@@ -548,7 +550,7 @@
   (def b h)
   # add a delimiter to the output if there were any basic code points
   (when (pos? b)
-    (array/push output (chr "-")))
+    (array/push output (get delimiter 0)))
   (def in-len (length input-cps))
   (while (< h in-len)
     (def m (find-min-less-than n input-cps))
