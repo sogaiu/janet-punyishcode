@@ -286,20 +286,17 @@
     (while (def in-cp (get input in-idx))
       (++ in-idx)
       (def digit (cp-to-digit in-cp))
-      # XXX: no overflow check
-      (+= delta (* weight digit))
+      (+= delta (* weight digit)) # XXX: no overflow check
       (def thr (calc-threshold bias digit-idx))
       (when (< digit thr)
         (break))
-      # XXX: no overflow check
-      (*= weight (- base thr))
+      (*= weight (- base thr)) # XXX: no overflow check
       (++ digit-idx))
     # number of potential character inserts for output
     (def n-pot-insrts (inc (length output)))
     (set bias
          (adapt delta n-pot-insrts (zero? i)))
-    # XXX: no overflow check
-    (+= curr-cp (div (+ delta i) n-pot-insrts))
+    (+= curr-cp (div (+ delta i) n-pot-insrts)) # XXX: no overflow check
     (set i (mod (+ delta i) n-pot-insrts))
     (assert (>= curr-cp initial-n)
             (string/format "unexpected basic code point: %n" curr-cp))
@@ -556,7 +553,7 @@
     (each cp input-cps
       (when (or (< cp n)
                 (< cp initial-n))
-        # XXX: not checking for overflow
+        # XXX: no overflow check
         (++ delta))
       (when (= cp n)
         (var q delta)
