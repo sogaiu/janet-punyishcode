@@ -266,28 +266,26 @@
   (var curr-cp initial-n)
   (var bias initial-bias)
   #
-  (def last-delim-idx (last (string/find-all delimiter input)))
+  (def ldelim-idx (last (string/find-all delimiter input)))
   # copy all basic code points that appear before the last delimiter
   (def output
-    (if last-delim-idx
+    (if ldelim-idx
       (filter |(< $ initial-n)
-              (slice input 0 last-delim-idx))
+              (slice input 0 ldelim-idx))
       @[]))
-  # process input
   (var in-idx
-    (if last-delim-idx
-      (inc last-delim-idx)
+    (if ldelim-idx
+      (inc ldelim-idx)
       0))
   (def in-len (length input))
+  # process input
   (while (< in-idx in-len)
     (var delta 0)
     (var weight 1)
     (var digit-idx 0)
-    (while true
-      (when (not (get input in-idx))
-        (break))
-      (def digit (cp-to-digit (get input in-idx)))
+    (while (def in-cp (get input in-idx))
       (++ in-idx)
+      (def digit (cp-to-digit in-cp))
       # XXX: no overflow check
       (+= delta (* weight digit))
       (def thr (calc-threshold bias digit-idx))
