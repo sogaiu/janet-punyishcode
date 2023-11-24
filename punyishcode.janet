@@ -278,7 +278,7 @@
       (inc ldelim-idx)
       0))
   (def in-len (length input))
-  # process input
+  # reconstruct the rest of the original string
   (while (< in-idx in-len)
     (var delta 0)
     (var weight 1)
@@ -300,6 +300,7 @@
     (set i (mod (+ delta i) n-pot-insrts))
     (assert (>= curr-cp initial-n)
             (string/format "unexpected basic code point: %n" curr-cp))
+    # what all the fuss is really about
     (array/insert output i curr-cp)
     (++ i))
   #
@@ -530,6 +531,18 @@
   #
   res)
 
+# 3.2 Insertion unsort coding
+#
+# ...
+#
+# The encoder's main task is to derive the sequence of deltas that
+# will cause the decoder to construct the desired string.  It can do
+# this by repeatedly scanning the extended string for the next code
+# point that the decoder would need to insert, and counting the number
+# of state changes the decoder would need to perform, mindful of the
+# fact that the decoder's extended string will include only those code
+# points that have already been inserted.
+
 (defn encode*
   [input-cps]
   (var n initial-n)
@@ -545,6 +558,7 @@
     (array/push output (get delimiter 0)))
   (def in-len (length input-cps))
   (var in-idx b)
+  # derive deltas and encode
   (while (< in-idx in-len)
     (def m (find-min-less-than n input-cps))
     (+= delta
