@@ -188,6 +188,38 @@
 
   )
 
+(defn calc-threshold
+  [bias j]
+  (let [k (* base (inc j))]
+    (cond
+      (<= k (+ bias tmin))
+      tmin
+      #
+      (>= k (+ bias tmax))
+      tmax
+      #
+      (- k bias))))
+
+(comment
+
+  (calc-threshold 72 0)
+  # =>
+  1
+
+  (calc-threshold 72 1)
+  # =>
+  1
+
+  (calc-threshold 72 2)
+  # =>
+  26
+
+  (calc-threshold 72 71)
+  # =>
+  26
+
+  )
+
 ## decoding
 
 # 6.2 Decoding procedure
@@ -227,18 +259,6 @@
 # The deltas are a run-length encoding of this sequence of events:
 # they are the lengths of the runs of non-insertion states preceeding
 # the insertion states.
-
-(defn calc-threshold
-  [bias j]
-  (let [k (* base (inc j))]
-    (cond
-      (<= k (+ bias tmin))
-      tmin
-      #
-      (>= k (+ bias tmax))
-      tmax
-      #
-      (- k bias))))
 
 (defn decode*
   [input]
