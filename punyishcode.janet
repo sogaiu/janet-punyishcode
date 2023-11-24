@@ -550,10 +550,8 @@
   (var h b)
   (while (< h in-len)
     (def m (find-min-less-than n input-cps))
-    #(printf "m: %n" m)
     (+= delta
         (* (- m n) (inc h)))
-    #(printf "delta: %n" delta)
     (set n m)
     (each cp input-cps
       (when (or (< cp n)
@@ -574,10 +572,8 @@
                       (- base thr)))
           (++ digit-idx))
         (array/push output (digit-to-cp q))
-        #(printf "bias before: %n" bias)
         (set bias
              (adapt delta (inc h) (= h b)))
-        #(printf "bias after: %n" bias)
         (set delta 0)
         (++ h)))
     (++ delta)
