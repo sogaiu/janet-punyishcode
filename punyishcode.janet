@@ -17,6 +17,7 @@
 (def initial-bias 72)
 
 # first code point beyond ASCII
+# sort of a boundary between basic and extended code points
 (def initial-n 0x80)
 
 (def delimiter "-")
