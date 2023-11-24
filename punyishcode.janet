@@ -523,11 +523,10 @@
   [n input]
   (var res nil)
   (each elt input
-    (when (<= initial-cp n elt)
-      (if (nil? res)
-        (set res elt)
-        (when (< elt res)
-          (set res elt)))))
+    (when (and (<= initial-cp n elt)
+               (or (nil? res)
+                   (< elt res)))
+      (set res elt)))
   #
   res)
 
