@@ -18,7 +18,7 @@
 
 # first code point beyond ASCII
 # sort of a boundary between basic and extended code points
-(def initial-n 0x80)
+(def initial-cp 0x80)
 
 (def delimiter "-")
 
@@ -263,14 +263,14 @@
 (defn decode*
   [input]
   (var i 0)
-  (var curr-cp initial-n)
+  (var curr-cp initial-cp)
   (var bias initial-bias)
   #
   (def ldelim-idx (last (string/find-all delimiter input)))
   # copy all basic code points that appear before the last delimiter
   (def output
     (if ldelim-idx
-      (filter |(< $ initial-n)
+      (filter |(< $ initial-cp)
               (slice input 0 ldelim-idx))
       @[]))
   (var in-idx
@@ -298,7 +298,7 @@
          (adapt delta n-pot-insrts (zero? i)))
     (+= curr-cp (div (+ delta i) n-pot-insrts)) # XXX: no overflow check
     (set i (mod (+ delta i) n-pot-insrts))
-    (assert (>= curr-cp initial-n)
+    (assert (>= curr-cp initial-cp)
             (string/format "unexpected basic code point: %n" curr-cp))
     # what all the fuss is really about
     (array/insert output i curr-cp)
@@ -523,7 +523,7 @@
   [n input]
   (var res nil)
   (each elt input
-    (when (<= initial-n n elt)
+    (when (<= initial-cp n elt)
       (if (nil? res)
         (set res elt)
         (when (< elt res)
@@ -545,31 +545,31 @@
 
 (defn encode*
   [input-cps]
-  (var n initial-n)
+  (var curr-cp initial-cp)
   (var delta 0)
   (var bias initial-bias)
   # copy any basic code points to output
   (def output
-    (filter |(< $ initial-n) input-cps))
+    (filter |(< $ initial-cp) input-cps))
   # number of basic code points in input-cps
-  (def b (length output))
+  (def n-bas-cps (length output))
   # add a delimiter to the output if there were any basic code points
-  (when (pos? b)
+  (when (pos? n-bas-cps)
     (array/push output (get delimiter 0)))
   (def in-len (length input-cps))
-  (var in-idx b)
+  (var in-idx n-bas-cps)
   # derive deltas and encode
   (while (< in-idx in-len)
-    (def m (find-min-less-than n input-cps))
+    (def min-cp (find-min-less-than curr-cp input-cps))
     (+= delta
-        (* (- m n) (inc in-idx)))
-    (set n m)
+        (* (- min-cp curr-cp) (inc in-idx)))
+    (set curr-cp min-cp)
     (each cp input-cps
-      (when (or (< cp n)
-                (< cp initial-n))
+      (when (or (< cp curr-cp)
+                (< cp initial-cp))
         # XXX: no overflow check
         (++ delta))
-      (when (= cp n)
+      (when (= cp curr-cp)
         (var q delta)
         (var digit-idx 0)
         (while true
@@ -584,11 +584,11 @@
           (++ digit-idx))
         (array/push output (digit-to-cp q))
         (set bias
-             (adapt delta (inc in-idx) (= in-idx b)))
+             (adapt delta (inc in-idx) (= in-idx n-bas-cps)))
         (set delta 0)
         (++ in-idx)))
     (++ delta)
-    (++ n))
+    (++ curr-cp))
   #
   output)
 
