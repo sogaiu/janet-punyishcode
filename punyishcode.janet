@@ -544,11 +544,11 @@
   (when (pos? b)
     (array/push output (get delimiter 0)))
   (def in-len (length input-cps))
-  (var h b)
-  (while (< h in-len)
+  (var in-idx b)
+  (while (< in-idx in-len)
     (def m (find-min-less-than n input-cps))
     (+= delta
-        (* (- m n) (inc h)))
+        (* (- m n) (inc in-idx)))
     (set n m)
     (each cp input-cps
       (when (or (< cp n)
@@ -570,9 +570,9 @@
           (++ digit-idx))
         (array/push output (digit-to-cp q))
         (set bias
-             (adapt delta (inc h) (= h b)))
+             (adapt delta (inc in-idx) (= in-idx b)))
         (set delta 0)
-        (++ h)))
+        (++ in-idx)))
     (++ delta)
     (++ n))
   #
