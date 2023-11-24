@@ -284,7 +284,7 @@
   (while (< in-idx in-len)
     (var delta 0)
     (var weight 1)
-    (var digit-idx-j 0)
+    (var digit-idx 0)
     (while true
       (when (not (get input in-idx))
         (break))
@@ -292,12 +292,12 @@
       (++ in-idx)
       # XXX: no overflow check
       (+= delta (* weight digit))
-      (def thr (calc-threshold bias digit-idx-j))
+      (def thr (calc-threshold bias digit-idx))
       (when (< digit thr)
         (break))
       # XXX: no overflow check
       (*= weight (- base thr))
-      (++ digit-idx-j))
+      (++ digit-idx))
     # number of potential character inserts for output
     (def n-pot-insrts (inc (length output)))
     (set bias
@@ -569,9 +569,9 @@
         (++ delta))
       (when (= cp n)
         (var q delta)
-        (var digit-idx-j 0)
+        (var digit-idx 0)
         (while true
-          (def thr (calc-threshold bias digit-idx-j))
+          (def thr (calc-threshold bias digit-idx))
           (when (< q thr)
             (break))
           (array/push output
@@ -579,7 +579,7 @@
                                       (mod (- q thr) (- base thr)))))
           (set q (div (- q thr)
                       (- base thr)))
-          (++ digit-idx-j))
+          (++ digit-idx))
         (array/push output (digit-to-cp q))
         #(printf "bias before: %n" bias)
         (set bias
