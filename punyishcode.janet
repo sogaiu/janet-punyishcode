@@ -252,8 +252,6 @@
   (when last-delim-idx
     (for idx 0 last-delim-idx
       (def elt (get input idx))
-      # XXX
-      #(when (< elt 0x80)
       (when (< elt initial-n)
         (array/push output elt))))
   # process input
@@ -273,14 +271,12 @@
       #(printf "weight: %n" weight)
       #(printf "input at in-idx: %n %s" (get input in-idx) (buffer/push @"" (get input in-idx)))
       (when (not (get input in-idx))
-        #(printf "no input, break")
         (break))
       (def digit (cp-to-digit (get input in-idx)))
       (++ in-idx)
       #(printf "digit: %n" digit)
       # XXX: no overflow check
       (+= delta (* weight digit))
-      #(printf "i: %n" i)
       (def thr (calc-threshold bias digit-idx-j))
       #(printf "thr: %n" thr)
       (when (< digit thr)
