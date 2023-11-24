@@ -286,40 +286,27 @@
     (var weight 1)
     (var digit-idx-j 0)
     (while true
-      #(printf "<<top of while>>")
-      #(printf "digit-idx-j: %n" digit-idx-j)
-      #(printf "in-idx: %n" in-idx)
-      #(printf "weight: %n" weight)
-      #(printf "input at in-idx: %n %s" (get input in-idx) (buffer/push @"" (get input in-idx)))
       (when (not (get input in-idx))
         (break))
       (def digit (cp-to-digit (get input in-idx)))
       (++ in-idx)
-      #(printf "digit: %n" digit)
       # XXX: no overflow check
       (+= delta (* weight digit))
       (def thr (calc-threshold bias digit-idx-j))
-      #(printf "thr: %n" thr)
       (when (< digit thr)
         (break))
       # XXX: no overflow check
       (*= weight (- base thr))
       (++ digit-idx-j))
-    #(printf "delta: %n" delta)
     # number of potential character inserts for output
     (def n-pot-insrts (inc (length output)))
-    #(printf "n-pot-insrts: %n" n-pot-insrts)
-    #(printf "bias before: %n" bias)
     (set bias
          (adapt delta n-pot-insrts (zero? i)))
-    #(printf "bias after: %n" bias)
     # XXX: no overflow check
     (+= curr-cp (div (+ delta i) n-pot-insrts))
     (set i (mod (+ delta i) n-pot-insrts))
-    # XXX: is initial-n appropriate?  should this be hard-wired to 0x80?
     (assert (>= curr-cp initial-n)
             (string/format "unexpected basic code point: %n" curr-cp))
-    #(printf "inserting %n at: %n" curr-cp i)
     (array/insert output i curr-cp)
     (++ i))
   #
