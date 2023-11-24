@@ -266,15 +266,13 @@
   (var curr-cp initial-n)
   (var bias initial-bias)
   #
-  (def output @[])
-  #
   (def last-delim-idx (last (string/find-all delimiter input)))
   # copy all basic code points that appear before the last delimiter
-  (when last-delim-idx
-    (for idx 0 last-delim-idx
-      (def elt (get input idx))
-      (when (< elt initial-n)
-        (array/push output elt))))
+  (def output
+    (if last-delim-idx
+      (filter |(< $ initial-n)
+              (slice input 0 last-delim-idx))
+      @[]))
   # process input
   (var in-idx
     (if last-delim-idx
@@ -542,19 +540,16 @@
   (var n initial-n)
   (var delta 0)
   (var bias initial-bias)
-  (def output @[])
-  (var h 0)
   # copy any basic code points to output
-  (each elt input-cps
-    (when (< elt initial-n)
-      (array/push output elt)
-      (++ h)))
+  (def output
+    (filter |(< $ initial-n) input-cps))
   # number of basic code points in input-cps
-  (def b h)
+  (def b (length output))
   # add a delimiter to the output if there were any basic code points
   (when (pos? b)
     (array/push output (get delimiter 0)))
   (def in-len (length input-cps))
+  (var h b)
   (while (< h in-len)
     (def m (find-min-less-than n input-cps))
     #(printf "m: %n" m)
