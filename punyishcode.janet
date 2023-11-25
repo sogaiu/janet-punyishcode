@@ -20,7 +20,7 @@
 # sort of a boundary between basic and extended code points
 (def initial-cp 0x80)
 
-(def delimiter "-")
+(def delimiter (chr "-"))
 
 # 3.4 Bias adaptation
 #
@@ -261,29 +261,32 @@
 # the insertion states.
 
 (defn decode*
-  [input]
+  [input-cps]
   (var insrt-idx 0)        # i from state machine
   (var curr-cp initial-cp) # n from state machine
   (var bias initial-bias)
   #
-  (def ldelim-idx (last (string/find-all delimiter input)))
+  (def in-len (length input-cps))
+  (def ldelim-idx
+    (when-let [idx (find-index |(= $ delimiter)
+                               (reverse input-cps))]
+      (dec (- in-len idx))))
   # copy all basic code points that appear before the last delimiter
   (def output
     (if ldelim-idx
       (filter |(< $ initial-cp)
-              (slice input 0 ldelim-idx))
+              (slice input-cps 0 ldelim-idx))
       @[]))
   (var in-idx
     (if ldelim-idx
       (inc ldelim-idx)
       0))
-  (def in-len (length input))
   # reconstruct the rest of the original string
   (while (< in-idx in-len)
     (var delta 0)
     (var weight 1)
     (var digit-idx 0)
-    (while (def in-cp (get input in-idx))
+    (while (def in-cp (get input-cps in-idx))
       (++ in-idx)
       (def digit (cp-to-digit in-cp))
       (+= delta (* weight digit)) # XXX: no overflow check
@@ -381,7 +384,8 @@
   ``
   [input &opt buf]
   (default buf @"")
-  (->> (decode* input)
+  (->> (map identity input)
+       decode*
        (map cp-to-utf-8)
        splice
        (buffer/push buf)))
@@ -556,7 +560,7 @@
   (def n-bas-cps (length output))
   # add a delimiter to the output if there were any basic code points
   (when (pos? n-bas-cps)
-    (array/push output (get delimiter 0)))
+    (array/push output delimiter))
   (def in-len (length input-cps))
   (var in-idx n-bas-cps)
   # derive deltas and encode
