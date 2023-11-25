@@ -673,7 +673,7 @@
 
 (defn encode
   ``
-  Given `input`, return a punycode-encoded result as a buffer.
+  Encode `input` as punycode into a buffer.
 
   If `buf` (buffer) is supplied, append the result to `buf`.
   Otherwise, append to a new buffer.
