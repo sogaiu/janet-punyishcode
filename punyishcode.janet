@@ -260,6 +260,53 @@
 # they are the lengths of the runs of non-insertion states preceeding
 # the insertion states.
 
+(defn rev-find-index
+  [pred ind &opt dflt]
+  (var idx (dec (length ind)))
+  (var res dflt)
+  (while (>= idx 0)
+    (when (pred (in ind idx))
+      (set res idx)
+      (break))
+    (-- idx))
+  res)
+
+(comment
+
+  (def delim (chr "-"))
+
+  (rev-find-index |(= delim $) [75 45 45 65])
+  # =>
+  2
+
+  (rev-find-index |(= delim $)
+                  (map identity "Mnchen-0st-9db"))
+  # =>
+  10
+
+  (rev-find-index |(= delim $)
+                  (map identity "-heyhey"))
+  # =>
+  0
+
+  (rev-find-index |(= delim $)
+                  (map identity "hohoho-"))
+  # =>
+  6
+
+  (rev-find-index |(= delim $)
+                  (map identity "no_dashes_here"))
+  # =>
+  nil
+
+  (rev-find-index |(= delim $)
+                  (map identity "no_dashes_here")
+                  :oops)
+  # =>
+  :oops
+
+  )
+
 (defn decode*
   [input-cps]
   (var insrt-idx 0)        # i from state machine
@@ -267,10 +314,7 @@
   (var bias initial-bias)
   #
   (def in-len (length input-cps))
-  (def ldelim-idx
-    (when-let [idx (find-index |(= $ delimiter)
-                               (reverse input-cps))]
-      (dec (- in-len idx))))
+  (def ldelim-idx (rev-find-index |(= delimiter $) input-cps))
   # copy all basic code points that appear before the last delimiter
   (def output
     (if ldelim-idx
