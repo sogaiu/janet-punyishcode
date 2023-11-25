@@ -1,6 +1,6 @@
 # punyishcode
 
-Punycode decoding / encoding in Janet.
+[Punycode](https://en.wikipedia.org/wiki/Punycode) decoding / encoding in Janet.
 
 # Usage
 
