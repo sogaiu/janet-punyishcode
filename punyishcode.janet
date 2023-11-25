@@ -428,7 +428,11 @@
   ``
   [input &opt buf]
   (default buf @"")
-  (->> (map identity input)
+  (def input-cps
+    (cond (indexed? input) input
+          (bytes? input) (map identity input)
+          (errorf "unexpected type: %n" (type input))))
+  (->> input-cps
        decode*
        (map cp-to-utf-8)
        splice
