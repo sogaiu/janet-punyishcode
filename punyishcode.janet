@@ -262,8 +262,8 @@
 
 (defn decode*
   [input]
-  (var i 0)
-  (var curr-cp initial-cp)
+  (var insrt-idx 0)        # i from state machine
+  (var curr-cp initial-cp) # n from state machine
   (var bias initial-bias)
   #
   (def ldelim-idx (last (string/find-all delimiter input)))
@@ -295,14 +295,16 @@
     # number of potential character inserts for output
     (def n-pot-insrts (inc (length output)))
     (set bias
-         (adapt delta n-pot-insrts (zero? i)))
-    (+= curr-cp (div (+ delta i) n-pot-insrts)) # XXX: no overflow check
-    (set i (mod (+ delta i) n-pot-insrts))
+         (adapt delta n-pot-insrts (zero? insrt-idx)))
+    (+= curr-cp
+        (div (+ delta insrt-idx) n-pot-insrts)) # XXX: no overflow check
+    (set insrt-idx
+         (mod (+ delta insrt-idx) n-pot-insrts))
     (assert (>= curr-cp initial-cp)
             (string/format "unexpected basic code point: %n" curr-cp))
     # what all the fuss is really about
-    (array/insert output i curr-cp)
-    (++ i))
+    (array/insert output insrt-idx curr-cp)
+    (++ insrt-idx))
   #
   output)
 
