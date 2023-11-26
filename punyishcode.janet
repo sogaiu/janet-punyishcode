@@ -261,6 +261,9 @@
 # the insertion states.
 
 (defn rev-find-index
+  ``
+  Like `find-index`, but backwards.
+  ``
   [pred ind &opt dflt]
   (var idx (dec (length ind)))
   (var res dflt)
