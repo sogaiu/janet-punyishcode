@@ -260,7 +260,7 @@
 # they are the lengths of the runs of non-insertion states preceeding
 # the insertion states.
 
-(defn rev-find-index
+(defn find-rindex
   ``
   Like `find-index`, but backwards.
   ``
@@ -278,31 +278,31 @@
 
   (def delim (chr "-"))
 
-  (rev-find-index |(= delim $) [75 45 45 65])
+  (find-rindex |(= delim $) [75 45 45 65])
   # =>
   2
 
-  (rev-find-index |(= delim $)
+  (find-rindex |(= delim $)
                   (map identity "Mnchen-0st-9db"))
   # =>
   10
 
-  (rev-find-index |(= delim $)
+  (find-rindex |(= delim $)
                   (map identity "-heyhey"))
   # =>
   0
 
-  (rev-find-index |(= delim $)
+  (find-rindex |(= delim $)
                   (map identity "hohoho-"))
   # =>
   6
 
-  (rev-find-index |(= delim $)
+  (find-rindex |(= delim $)
                   (map identity "no_dashes_here"))
   # =>
   nil
 
-  (rev-find-index |(= delim $)
+  (find-rindex |(= delim $)
                   (map identity "no_dashes_here")
                   :oops)
   # =>
@@ -317,7 +317,7 @@
   (var bias initial-bias)
   #
   (def in-len (length input-cps))
-  (def ldelim-idx (rev-find-index |(= delimiter $) input-cps))
+  (def ldelim-idx (find-rindex |(= delimiter $) input-cps))
   # copy all basic code points that appear before the last delimiter
   (def output
     (if ldelim-idx
