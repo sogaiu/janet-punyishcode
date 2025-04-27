@@ -99,9 +99,9 @@
 
   This represents the map:
 
-    A-Z  ->   0-25
-    a-z  ->   0-25
-    0-9  ->  26-35
+  * A-Z -> 0-25
+  * a-z -> 0-25
+  * 0-9 -> 26-35
 
   See `digit-to-cp`.
   ``
@@ -154,8 +154,8 @@
 
   This represents the map:
 
-     0-25  ->  a-z
-    26-35  ->  0-9
+  * 0-25 -> a-z
+  * 26-35 -> 0-9
 
   See `cp-to-digit`.
   ``
