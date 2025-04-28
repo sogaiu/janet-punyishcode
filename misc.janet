@@ -153,7 +153,7 @@
   )
 
 (defn cpn-to-str
-  ``
+  ````
   Convert a "code point notated" string `cpn-str` to a janet string.
 
   `cpn-str` is a whitespace-separated string consisting of strings
@@ -163,8 +163,10 @@
   The motivation for this function was to make it easier to work with
   the notation used in the examples from RFC3492, e.g.
 
-    u+4ED6 u+4EEC u+4E3A u+4EC0 u+4E48 u+4E0D u+8BF4 u+4E2D u+6587
-  ``
+  ```
+  u+4ED6 u+4EEC u+4E3A u+4EC0 u+4E48 u+4E0D u+8BF4 u+4E2D u+6587
+  ```
+  ````
   [cpn-str]
   (def a-peg
     ~{:main (sequence (some (choice :ws :cp)) -1)
